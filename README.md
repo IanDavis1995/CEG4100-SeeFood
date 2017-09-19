@@ -1,2 +1,2 @@
-# CEG4100-SeeFood
-SeeFood Project repository for CEG4100
+# SeeFood AI System
+Central repository for SeeFood AI System
