@@ -14,3 +14,7 @@ for details on configuring apache.
 ## mod_wsgi
 See http://flask.pocoo.org/docs/0.12/deploying/mod_wsgi/
 for details on installing and setting up mod_wsgi with Apache httpd.
+
+
+# README Formatting
+For information on editing/adding to this readme file, see https://help.github.com/articles/basic-writing-and-formatting-syntax/
