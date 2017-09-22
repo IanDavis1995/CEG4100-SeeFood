@@ -16,5 +16,11 @@ See http://flask.pocoo.org/docs/0.12/deploying/mod_wsgi/
 for details on installing and setting up mod_wsgi with Apache httpd.
 
 
+# Android App
+## Displaying Image Select Dialog
+See https://stackoverflow.com/questions/4455558/allow-user-to-select-camera-or-gallery-for-image
+for a good explanation of the solutions for displaying an android image gallery to prompt the user to select an image.
+
+
 # README Formatting
 For information on editing/adding to this readme file, see https://help.github.com/articles/basic-writing-and-formatting-syntax/
