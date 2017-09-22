@@ -1,0 +1,81 @@
+FORMAT: 1A
+HOST: http://amazon-ec2-instance-ip/
+
+# seefood-ai
+
+seefood-ai is a simple REST API that interfaces with the Seefood AI in the cloud to 
+analyze images and whether or not they contain food.
+
+## Gallery Management [/gallery]
+### Receive Gallery [GET]
+
+Request a list of images that have been uploaded to the server, 
+limited to a specific number of results.
+
++ Request (application/json)
+
+        {
+            "page": 1,
+            "limit": 20
+        }
+
++ Response 200 (application/json)
+
+        [
+            {
+                "name": "wooden_table",
+                "type": "png",
+                "data": "AB00234AFDFDAD2002340F0011000000100100011AE324FFAD32...",
+                "uploaded_at": "2015-08-05T08:40:51.620Z",
+                "contains_food": "No",
+                "certainty": .9
+            },
+            {
+                "name": "apple",
+                "type": "png",
+                "data": "0010FABDDA0AB00D1D012388D7V00AD97F077A6D097123207DD1...",
+                "uploaded_at": "2015-08-05T08:40:51.620Z",
+                "contains_food": "Yes",
+                "certainty": .75
+            }
+        ]
+
+## AI Interface [/analyze]
+### Analyze Image(s) [POST]
+
+Upload and analyze a list of images with the seefood-ai. 
+Return whether or not each image contains food and the certainty.
+NOTE: The binary data of the images will not be returned for efficiency.
+
++ Request (application/json)
+
+        [
+            {
+                "name": "banana",
+                "type": "png",
+                "data": "AB00234AFDFDAD2002340F0011000000100100011AE324FFAD32..."
+            },
+            {
+                "name": "car",
+                "type": "png",
+                "data": "AB00234AFDFDAD2002340F0011000000100100011AE324FFAD32..."
+            }
+        ]
+
++ Response 201 (application/json)
+    + Body
+
+            [
+                {   
+                    "name": "banana",
+                    "type": "png",
+                    "contains_food": "Yes",
+                    "certainty": .95
+                },
+                {
+                    "name": "car",
+                    "type": "png",
+                    "contains_food": "No",
+                    "certainty": .66
+                }
+            ]
