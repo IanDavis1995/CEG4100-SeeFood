@@ -19,6 +19,7 @@ for details on installing and setting up mod_wsgi with Apache httpd.
 # Android App
 ## Displaying Image Select Dialog
 See https://stackoverflow.com/questions/4455558/allow-user-to-select-camera-or-gallery-for-image
+
 Also See https://stackoverflow.com/a/5086706
 For an example of PhotoPickerIntents, which may be useful. 
 for a good explanation of the solutions for displaying an android image gallery to prompt the user to select an image.
