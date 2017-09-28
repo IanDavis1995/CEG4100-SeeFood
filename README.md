@@ -24,6 +24,9 @@ for a good explanation of the solutions for displaying an android image gallery 
 Also See https://stackoverflow.com/a/5086706
 For an example of PhotoPickerIntents, which may be useful. 
 
+## Displaying Camera Preview Feed
+See https://github.com/google/cameraview
+for a library that may be useful for integrating an android camera feed into our app (similar to snapchat)
 
 # README Formatting
 For information on editing/adding to this readme file, see https://help.github.com/articles/basic-writing-and-formatting-syntax/
