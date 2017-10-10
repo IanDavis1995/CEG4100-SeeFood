@@ -1,6 +1,8 @@
 # SeeFood AI System
 Central repository for SeeFood AI System
 
+See http://docs.seefoodai.apiary.io/# for documentation on the rest API for the seefood ai webserver
+
 # Apache WebServer
 ## Installation
 To install apache2's httpd on Ubuntu, run the following command:
