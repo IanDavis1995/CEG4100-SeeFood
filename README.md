@@ -30,6 +30,7 @@ For an example of PhotoPickerIntents, which may be useful.
 https://developer.android.com/reference/android/hardware/camera2/CameraManager.html#getCameraIdList()
 https://developer.android.com/reference/android/os/Handler.html
 https://developer.android.com/reference/android/hardware/camera2/CameraDevice.StateCallback.html
+https://github.com/googlesamples/android-Camera2Basic/blob/master/Application/src/main/java/com/example/android/camera2basic/Camera2BasicFragment.java
 
 # README Formatting
 For information on editing/adding to this readme file, see https://help.github.com/articles/basic-writing-and-formatting-syntax/
