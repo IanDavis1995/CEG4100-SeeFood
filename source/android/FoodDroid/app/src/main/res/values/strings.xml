@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">FoodDroid</string>
+    <string name="picture">Take Photo</string>
+    <string name="description_info">Description</string>
+    <string name="request_permission">Request Permission</string>
+    <string name="camera_error">Camera Error</string>
+    <string name="intro_message">Intro Message</string>
 </resources>

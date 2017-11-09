@@ -1,4 +1,4 @@
-package ceg4110.wright.edu.fooddroid;
+package edu.wright.ceg4110.fooddroid;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 /**
- * Instrumentation test, which will execute on an Android device.
+ * Instrumented test, which will execute on an Android device.
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("ceg4110.wright.edu.fooddroid", appContext.getPackageName());
+        assertEquals("ceg4110.wright.egu.fooddroid", appContext.getPackageName());
     }
 }

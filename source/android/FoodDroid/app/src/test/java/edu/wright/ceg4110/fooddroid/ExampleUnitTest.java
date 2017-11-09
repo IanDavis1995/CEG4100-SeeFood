@@ -1,4 +1,4 @@
-package ceg4110.wright.edu.fooddroid;
+package edu.wright.ceg4110.fooddroid;
 
 import org.junit.Test;
 
