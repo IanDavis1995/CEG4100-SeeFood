@@ -16,6 +16,8 @@ import com.otaliastudios.cameraview.GestureAction;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import edu.wright.ceg4110.fooddroid.web.HTTPHandler;
 import edu.wright.ceg4110.fooddroid.web.Image;
 
@@ -24,6 +26,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final String TAG = "CAMERA_ACTIVITY";
     private CameraView cameraView;
     private Button takePictureButton;
+
+    private Response.Listener<String> httpMultipartResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            Log.d(TAG, response);
+        }
+    };
 
     private Response.Listener<JSONObject> httpResponseListener = new Response.Listener<JSONObject>() {
         @Override
@@ -46,11 +55,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CameraListener pictureTakenListener = new CameraListener() {
         @Override
         public void onPictureTaken(byte[] picture) {
-//            cameraView.stop();
-
             try {
-                HTTPHandler.analyze(new Image(picture), httpResponseListener, httpErrorListener);
-            } catch (JSONException e) {
+                HTTPHandler.analyze_multipart(new Image(picture), httpMultipartResponseListener, httpErrorListener);
+            } catch (IOException e) {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
         }
