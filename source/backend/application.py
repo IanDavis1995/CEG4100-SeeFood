@@ -58,10 +58,14 @@ def parseJSON():
 def analyze_json():
     json_request = json.loads(request.data)
 
-    filedata = base64.standard_b64encode(json_request["data"])
+    filedata = base64.b64decode(json_request["data"])
     filename = json_request["name"]
     filetype = json_request["type"]
     filepath = os.path.join(APP_HOME, "uploaded_images/", filename)
+
+    logging.debug("Filedata (shrunk): " + filedata[:20])
+    logging.debug("Filename: {0}".format(filename))
+    logging.debug("Filetype: {0}".format(filetype))
 
     with open(filepath, "wb") as image_file:
         image_file.write(filedata)
@@ -70,10 +74,6 @@ def analyze_json():
     image = Image.open(filepath).convert("RGB")
     image = image.resize((227, 227), Image.BILINEAR)
     image.save(resized_filepath)
-
-    logging.debug("Filedata (shrunk): {0}".format(filedata[:20].encode("utf8")))
-    logging.debug("Filename: {0}".format(filename))
-    logging.debug("Filetype: {0}".format(filetype))
 
     img_tensor = [np.asarray(image, dtype=np.float32)]
     scores = sess.run(class_scores, {x_input: img_tensor, keep_prob: 1.})

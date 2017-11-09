@@ -28,7 +28,7 @@ public class Image {
 
     public JSONObject json() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("data", Base64.encode(data, Base64.DEFAULT));
+        jsonObject.put("data", Base64.encodeToString(data, Base64.DEFAULT));
         jsonObject.put("name", name);
         jsonObject.put("type", TYPE);
         return jsonObject;

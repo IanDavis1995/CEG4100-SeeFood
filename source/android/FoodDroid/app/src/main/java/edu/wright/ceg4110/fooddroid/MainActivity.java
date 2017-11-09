@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CameraListener pictureTakenListener = new CameraListener() {
         @Override
         public void onPictureTaken(byte[] picture) {
-            cameraView.stop();
+//            cameraView.stop();
 
             try {
                 HTTPHandler.analyze(new Image(picture), httpResponseListener, httpErrorListener);
