@@ -40,17 +40,11 @@ public class HTTPHandler {
         requestQueue = Volley.newRequestQueue(context.getApplicationContext());
     }
 
-    public static void analyze(ArrayList<Image> images,
+    public static void analyze(Image image,
                                Response.Listener<JSONObject> responseListener,
                                Response.ErrorListener errorListener) throws JSONException {
-        String requestUrl = url + "analyze";
-        JSONArray array = new JSONArray();
-
-        for (Image image: images) {
-            array.put(image.json());
-        }
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, requestUrl, responseListener, errorListener);
+        String requestUrl = url + "analyze_json";
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, requestUrl, image.json(), responseListener, errorListener);
         requestQueue.add(jsObjRequest);
     }
 }

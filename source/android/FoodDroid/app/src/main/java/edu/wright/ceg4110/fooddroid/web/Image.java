@@ -1,5 +1,7 @@
 package edu.wright.ceg4110.fooddroid.web;
 
+import android.util.Base64;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,7 +28,7 @@ public class Image {
 
     public JSONObject json() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("data", data);
+        jsonObject.put("data", Base64.encode(data, Base64.DEFAULT));
         jsonObject.put("name", name);
         jsonObject.put("type", TYPE);
         return jsonObject;

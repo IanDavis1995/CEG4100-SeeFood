@@ -16,13 +16,11 @@ import com.otaliastudios.cameraview.GestureAction;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import edu.wright.ceg4110.fooddroid.web.HTTPHandler;
 import edu.wright.ceg4110.fooddroid.web.Image;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "CAMERA_ACTIVITY";
     private CameraView cameraView;
     private Button takePictureButton;
@@ -49,11 +47,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onPictureTaken(byte[] picture) {
             cameraView.stop();
-            ArrayList<Image> images = new ArrayList<>();
-            images.add(new Image(picture));
 
             try {
-                HTTPHandler.analyze(images, httpResponseListener, httpErrorListener);
+                HTTPHandler.analyze(new Image(picture), httpResponseListener, httpErrorListener);
             } catch (JSONException e) {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
