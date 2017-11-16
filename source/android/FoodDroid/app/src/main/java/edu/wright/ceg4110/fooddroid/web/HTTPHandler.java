@@ -6,14 +6,11 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.request.SimpleMultiPartRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
 
 /**
  * Handler for the HTTP requests to send to the server.
@@ -37,14 +34,6 @@ public class HTTPHandler {
     public static void stop() {
         assertInitialized();
         requestQueue.stop();
-    }
-
-    public static void analyze_multipart(Image image,
-                                         Response.Listener<String> responseListener,
-                                         Response.ErrorListener errorListener) throws IOException {
-        assertInitialized();
-        String requestUrl = url + "analyze";
-        requestQueue.add(image.multiPartRequest(requestUrl, responseListener, errorListener));
     }
 
     public static void analyze(Image image,
