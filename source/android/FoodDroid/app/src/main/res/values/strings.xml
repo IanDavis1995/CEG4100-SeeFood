@@ -5,4 +5,14 @@
     <string name="request_permission">Request Permission</string>
     <string name="camera_error">Camera Error</string>
     <string name="intro_message">Intro Message</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="image_preview">Image Preview</string>
+    <string name="contains_food">Contains Food:</string>
+    <string name="certainty">Certainty:</string>
+    <string name="empty">N/A</string>
+    <string name="has_food">Yes</string>
+    <string name="no_food">No</string>
+    <string name="image_name">Name:</string>
 </resources>
