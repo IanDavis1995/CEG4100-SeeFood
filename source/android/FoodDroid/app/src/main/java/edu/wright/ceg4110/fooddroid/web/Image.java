@@ -49,4 +49,14 @@ public class Image {
     public Bitmap getBitmap() {
         return bitmap;
     }
+
+    public void setName(String imageName) {
+        imageName = imageName
+                .replace(" ", "")
+                .replace("/", "")
+                .replace(".", "")
+                .replace("!", "")
+                .replace("?", "");
+        this.name = imageName + "." + TYPE;
+    }
 }

@@ -39,25 +39,6 @@ public class AnalysisResultsActivity extends AppCompatActivity {
             return;
         }
 
-//        String filename = getIntent().getStringExtra("image_name");
-//        StringBuilder fileData = new StringBuilder();
-//        Image uploadedImage;
-//        String line;
-//
-//        try {
-//            BufferedReader reader = new BufferedReader(new FileReader(filename));
-//
-//            while ((line = reader.readLine()) != null) {
-//                    fileData.append(line).append("\n");
-//            }
-//
-//            reader.close();
-//            uploadedImage = new Image(fileData.toString());
-//            imagePreview.setImageBitmap(uploadedImage.getBitmap());
-//        } catch (IOException | JSONException e) {
-//            e.printStackTrace();
-//        }
-
         imagePreview.setImageBitmap(MainActivity.currentImage.getBitmap());
 
         try {

@@ -15,4 +15,6 @@
     <string name="has_food">Yes</string>
     <string name="no_food">No</string>
     <string name="image_name">Name:</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>

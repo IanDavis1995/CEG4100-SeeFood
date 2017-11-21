@@ -1,15 +1,18 @@
 package edu.wright.ceg4110.fooddroid;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TimingLogger;
-import android.view.Surface;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -29,10 +32,43 @@ import edu.wright.ceg4110.fooddroid.web.Image;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "CAMERA_ACTIVITY";
     private CameraView cameraView;
+    private EditText imageNameEdit;
+    private TextView imageNameLabel;
     private Button takePictureButton;
+    private Button confirmUploadButton;
+    private Button cancelUploadButton;
     private Intent analysisResultsIntent;
     public static Image currentImage;
     private TimingLogger timing = new TimingLogger(TAG, "cameraActivityTiming");
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        analysisResultsIntent = new Intent(this, AnalysisResultsActivity.class);
+
+        imageNameLabel = this.findViewById(R.id.image_name_label);
+
+        confirmUploadButton = this.findViewById(R.id.confirm_upload_button);
+        confirmUploadButton.setOnClickListener(this);
+
+        cancelUploadButton = this.findViewById(R.id.cancel_upload_button);
+        cancelUploadButton.setOnClickListener(this);
+
+        imageNameEdit = this.findViewById(R.id.image_name_edit);
+
+        takePictureButton = this.findViewById(R.id.take_picture_button);
+        takePictureButton.setOnClickListener(this);
+        cameraView = this.findViewById(R.id.camera);
+
+        cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM); // Pinch to zoom!
+        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER); // Tap to focus!
+        cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE); // Long tap to shoot!
+        cameraView.addCameraListener(pictureTakenListener);
+
+        HTTPHandler.initialize(getApplicationContext());
+    }
 
     private Response.Listener<JSONObject> httpResponseListener = new Response.Listener<JSONObject>() {
         @Override
@@ -66,41 +102,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             CameraUtils.decodeBitmap(picture, new CameraUtils.BitmapCallback() {
                 @Override
                 public void onBitmapReady(Bitmap bitmap) {
-                    try {
-                        currentImage = new Image(bitmap);
-                        timing.addSplit("decoded the byte array, making the http request");
-                        HTTPHandler.analyze(currentImage, httpResponseListener, httpErrorListener);
-                    } catch (JSONException e) {
-                        Log.e(TAG, Log.getStackTraceString(e));
-                    }
+                    currentImage = new Image(bitmap);
+                    timing.addSplit("decoded the byte array, making the http request");
+                    setConfirmUploadMode();
                 }
             });
         }
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        analysisResultsIntent = new Intent(this, AnalysisResultsActivity.class);
-
-        takePictureButton = this.findViewById(R.id.take_picture_button);
-        takePictureButton.setOnClickListener(this);
-
-        cameraView = this.findViewById(R.id.camera);
-        cameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM); // Pinch to zoom!
-        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER); // Tap to focus!
-        cameraView.mapGesture(Gesture.LONG_TAP, GestureAction.CAPTURE); // Long tap to shoot!
-        cameraView.addCameraListener(pictureTakenListener);
-
-        HTTPHandler.initialize(getApplicationContext());
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        cameraView.start();
+        setTakePictureMode();
         HTTPHandler.start();
     }
 
@@ -119,9 +132,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == takePictureButton.getId()) {
-            timing.addSplit("About to take a picture");
-            cameraView.capturePicture();
+        switch (view.getId()) {
+            case R.id.take_picture_button:
+                timing.addSplit("About to take a picture");
+                cameraView.capturePicture();
+                break;
+            case R.id.confirm_upload_button:
+                String imageName = imageNameEdit.getText().toString();
+
+                if (imageName.equals("")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("No image name given")
+                            .setMessage("Please supply a name for the given image!")
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .show();
+                    return;
+                }
+
+                currentImage.setName(imageName);
+                try {
+                    HTTPHandler.analyze(currentImage, httpResponseListener, httpErrorListener);
+                } catch (JSONException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+                break;
+            case R.id.cancel_upload_button:
+                setTakePictureMode();
+                break;
         }
+    }
+
+    private void setConfirmUploadMode() {
+        confirmUploadButton.setVisibility(View.VISIBLE);
+        cancelUploadButton.setVisibility(View.VISIBLE);
+        imageNameEdit.setVisibility(View.VISIBLE);
+        imageNameLabel.setVisibility(View.VISIBLE);
+        takePictureButton.setVisibility(View.INVISIBLE);
+    }
+
+    private void setTakePictureMode() {
+        takePictureButton.setVisibility(View.VISIBLE);
+        imageNameEdit.setVisibility(View.INVISIBLE);
+        imageNameLabel.setVisibility(View.INVISIBLE);
+        confirmUploadButton.setVisibility(View.INVISIBLE);
+        cancelUploadButton.setVisibility(View.INVISIBLE);
+        cameraView.start();
     }
 }
