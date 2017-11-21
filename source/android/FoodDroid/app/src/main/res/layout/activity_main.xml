@@ -55,7 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/take_picture_button"
-            android:layout_alignStart="@+id/cancel_upload_button">
+            android:layout_alignStart="@+id/cancel_upload_button"
+            android:id="@+id/linearLayout">
             <TextView
                 android:id="@+id/image_name_label"
                 android:layout_width="wrap_content"
@@ -72,6 +73,26 @@
                 android:inputType="textPersonName"
                 android:visibility="invisible" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/past_uploads_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/linearLayout"
+            android:layout_marginTop="8dp"
+            android:text="Button"
+            tools:text="Past Uploads" />
+
+        <Button
+            android:id="@+id/upload_existing_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/past_uploads_button"
+            android:text="Button"
+            tools:text="Upload Existing" />
+
     </RelativeLayout>
 
 </RelativeLayout>

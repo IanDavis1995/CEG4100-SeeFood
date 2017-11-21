@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 currentImage.setName(imageName);
+                
                 try {
                     HTTPHandler.analyze(currentImage, httpResponseListener, httpErrorListener);
                 } catch (JSONException e) {

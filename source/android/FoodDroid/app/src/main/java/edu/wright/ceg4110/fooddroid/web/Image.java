@@ -3,6 +3,7 @@ package edu.wright.ceg4110.fooddroid.web;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,5 +59,9 @@ public class Image {
                 .replace("!", "")
                 .replace("?", "");
         this.name = imageName + "." + TYPE;
+    }
+
+    public String getName() {
+        return name;
     }
 }

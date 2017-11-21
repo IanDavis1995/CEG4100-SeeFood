@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,16 +37,37 @@ public class HTTPHandler {
         requestQueue.stop();
     }
 
+    public static void sendRequest(JsonObjectRequest request) {
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(request);
+    }
+
     public static void analyze(Image image,
                                Response.Listener<JSONObject> responseListener,
                                Response.ErrorListener errorListener) throws JSONException {
         assertInitialized();
         String requestUrl = url + "analyze_json";
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, requestUrl, image.json(), responseListener, errorListener);
-        jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(jsObjRequest);
+        sendRequest(jsObjRequest);
+    }
+
+    public static void getAllImages(Response.Listener<JSONObject> responseListener,
+                                    Response.ErrorListener errorListener) throws JSONException {
+        assertInitialized();
+        String requestUrl = url + "search";
+        JSONObject emptyCriteria = makeEmptyCriteria();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, requestUrl, emptyCriteria, responseListener, errorListener);
+        sendRequest(jsonObjectRequest);
+    }
+
+    private static JSONObject makeEmptyCriteria() throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put("name", "");
+        object.put("food", "");
+        object.put("time", "");
+        return object;
     }
 
     private static void assertInitialized() throws IllegalStateException {
