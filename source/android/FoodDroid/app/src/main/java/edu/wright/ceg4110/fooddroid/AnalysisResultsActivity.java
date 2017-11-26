@@ -9,10 +9,13 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.wright.ceg4110.fooddroid.web.Image;
 import edu.wright.ceg4110.fooddroid.web.ImageAnalysis;
 
 
 public class AnalysisResultsActivity extends AppCompatActivity {
+
+    private static Image currentImage;
 
     private TextView imageNameDisplay;
     private TextView containsFoodDisplay;
@@ -39,7 +42,7 @@ public class AnalysisResultsActivity extends AppCompatActivity {
             return;
         }
 
-        imagePreview.setImageBitmap(MainActivity.currentImage.getBitmap());
+        imagePreview.setImageBitmap(currentImage.getBitmap());
 
         try {
             imageAnalysis = new ImageAnalysis(analysis);
@@ -56,5 +59,9 @@ public class AnalysisResultsActivity extends AppCompatActivity {
 
         imageNameDisplay.setText(imageAnalysis.getName());
         certaintyDisplay.setText(imageAnalysis.getCertainty() + "%");
+    }
+
+    public static void setCurrentImage(Image image) {
+        currentImage = image;
     }
 }

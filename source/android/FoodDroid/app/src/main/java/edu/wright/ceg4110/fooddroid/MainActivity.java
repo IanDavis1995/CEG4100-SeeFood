@@ -2,7 +2,6 @@ package edu.wright.ceg4110.fooddroid;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -37,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button takePictureButton;
     private Button confirmUploadButton;
     private Button cancelUploadButton;
+    private Button pastUploadsButton;
+    private Button uploadExistingButton;
     private Intent analysisResultsIntent;
     public static Image currentImage;
     private TimingLogger timing = new TimingLogger(TAG, "cameraActivityTiming");
@@ -49,6 +50,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         analysisResultsIntent = new Intent(this, AnalysisResultsActivity.class);
 
         imageNameLabel = this.findViewById(R.id.image_name_label);
+
+        pastUploadsButton = this.findViewById(R.id.past_uploads_button);
+        pastUploadsButton.setOnClickListener(this);
+
+        uploadExistingButton = this.findViewById(R.id.upload_existing_button);
+        uploadExistingButton.setOnClickListener(this);
 
         confirmUploadButton = this.findViewById(R.id.confirm_upload_button);
         confirmUploadButton.setOnClickListener(this);
@@ -81,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } catch (JSONException e) {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
+
+            AnalysisResultsActivity.setCurrentImage(currentImage);
 
             analysisResultsIntent.putExtra("analysis_results", response.toString());
             startActivity(analysisResultsIntent);
@@ -121,13 +130,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         cameraView.stop();
-        HTTPHandler.stop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         cameraView.destroy();
+        HTTPHandler.stop();
     }
 
     @Override
@@ -155,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 currentImage.setName(imageName);
-                
+
                 try {
                     HTTPHandler.analyze(currentImage, httpResponseListener, httpErrorListener);
                 } catch (JSONException e) {
@@ -165,6 +174,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.cancel_upload_button:
                 setTakePictureMode();
                 break;
+            case R.id.past_uploads_button:
+                Intent galleryIntent = new Intent(this, GalleryActivity.class);
+                startActivity(galleryIntent);
+                break;
+            case R.id.upload_existing_button:
+                // TODO: Implement launching the local gallery to select image(s).
+                break;
         }
     }
 
@@ -173,11 +189,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cancelUploadButton.setVisibility(View.VISIBLE);
         imageNameEdit.setVisibility(View.VISIBLE);
         imageNameLabel.setVisibility(View.VISIBLE);
+        pastUploadsButton.setVisibility(View.INVISIBLE);
+        uploadExistingButton.setVisibility(View.INVISIBLE);
         takePictureButton.setVisibility(View.INVISIBLE);
     }
 
     private void setTakePictureMode() {
         takePictureButton.setVisibility(View.VISIBLE);
+        pastUploadsButton.setVisibility(View.VISIBLE);
+        uploadExistingButton.setVisibility(View.VISIBLE);
         imageNameEdit.setVisibility(View.INVISIBLE);
         imageNameLabel.setVisibility(View.INVISIBLE);
         confirmUploadButton.setVisibility(View.INVISIBLE);

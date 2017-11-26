@@ -1,6 +1,7 @@
 package edu.wright.ceg4110.fooddroid.web;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
  * Created by ian on 11/2/17.
  */
 public class HTTPHandler {
+    private static final String TAG = "HTTP_HANDLER";
     private static final String url = "http://34.234.120.169/";
     private static RequestQueue requestQueue;
     private static boolean initialized = false;
@@ -29,16 +31,18 @@ public class HTTPHandler {
 
     public static void start() {
         assertInitialized();
+        Log.d(TAG, "Starting requestQueue");
         requestQueue.start();
     }
 
     public static void stop() {
         assertInitialized();
+        Log.d(TAG, "Stopping requestQueue");
         requestQueue.stop();
     }
 
     public static void sendRequest(JsonObjectRequest request) {
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
+        request.setRetryPolicy(new DefaultRetryPolicy(30000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(request);
@@ -48,26 +52,42 @@ public class HTTPHandler {
                                Response.Listener<JSONObject> responseListener,
                                Response.ErrorListener errorListener) throws JSONException {
         assertInitialized();
+        Log.d(TAG, "Sending analyze HTTP Request");
         String requestUrl = url + "analyze_json";
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, requestUrl, image.json(), responseListener, errorListener);
         sendRequest(jsObjRequest);
     }
 
+    public static void lookupImage(String imageName, Response.Listener<JSONObject> responseListener,
+                                   Response.ErrorListener errorListener) throws JSONException {
+        assertInitialized();
+        Log.d(TAG, "Sending lookupImage HTTP Request");
+        String requestUrl = url + "search";
+        JSONObject criteria = makeCriteria(imageName, "", "");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, requestUrl, criteria, responseListener, errorListener);
+        sendRequest(jsonObjectRequest);
+    }
+
     public static void getAllImages(Response.Listener<JSONObject> responseListener,
                                     Response.ErrorListener errorListener) throws JSONException {
         assertInitialized();
+        Log.d(TAG, "Sending getAllImages HTTP Request");
         String requestUrl = url + "search";
         JSONObject emptyCriteria = makeEmptyCriteria();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, requestUrl, emptyCriteria, responseListener, errorListener);
         sendRequest(jsonObjectRequest);
     }
 
-    private static JSONObject makeEmptyCriteria() throws JSONException {
+    private static JSONObject makeCriteria(String imageName, String decision, String time) throws JSONException {
         JSONObject object = new JSONObject();
-        object.put("name", "");
-        object.put("food", "");
-        object.put("time", "");
+        object.put("name", imageName);
+        object.put("food", decision);
+        object.put("time", time);
         return object;
+    }
+
+    private static JSONObject makeEmptyCriteria() throws JSONException {
+        return makeCriteria("", "", "");
     }
 
     private static void assertInitialized() throws IllegalStateException {
