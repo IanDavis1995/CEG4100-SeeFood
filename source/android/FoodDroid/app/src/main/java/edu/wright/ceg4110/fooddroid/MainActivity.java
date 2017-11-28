@@ -1,9 +1,11 @@
 package edu.wright.ceg4110.fooddroid;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,12 +27,16 @@ import com.otaliastudios.cameraview.GestureAction;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import edu.wright.ceg4110.fooddroid.web.HTTPHandler;
 import edu.wright.ceg4110.fooddroid.web.Image;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "CAMERA_ACTIVITY";
+    private final int SELECT_IMAGE = 1;
     private CameraView cameraView;
     private EditText imageNameEdit;
     private TextView imageNameLabel;
@@ -76,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cameraView.addCameraListener(pictureTakenListener);
 
         HTTPHandler.initialize(getApplicationContext());
+        HTTPHandler.start();
     }
 
     private Response.Listener<JSONObject> httpResponseListener = new Response.Listener<JSONObject>() {
@@ -124,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         setTakePictureMode();
-        HTTPHandler.start();
     }
 
     @Override
@@ -136,8 +142,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        cameraView.destroy();
         HTTPHandler.stop();
+        cameraView.destroy();
     }
 
     @Override
@@ -204,5 +210,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         confirmUploadButton.setVisibility(View.INVISIBLE);
         cancelUploadButton.setVisibility(View.INVISIBLE);
         cameraView.start();
+    }
+
+    private void displayImagePicker() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), SELECT_IMAGE);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SELECT_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                currentImage = new Image(bitmap);
+                setConfirmUploadMode();
+            } catch (IOException e) {
+                Log.e(TAG, "Unknown error", e);
+            }
+        }
     }
 }
