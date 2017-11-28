@@ -54,8 +54,7 @@ def parseJSON():
     for result in cur.fetchall():
         jsonObj[str('file%s' % i)] = {}
         jsonObj[str('file%s' % i)]['name'] = result[0]
-        # int(result[1].encode("hex"))
-        jsonObj[str('file%s' % i)]['contains_food'] = result[1].encode("hex") == "1"
+        jsonObj[str('file%s' % i)]['contains_food'] = result[1] == "\x01"
         jsonObj[str('file%s' % i)]['certainty'] = result[4]
         jsonObj[str('file%s' % i)]['type'] = 'jpg'
         jsonObj[str('file%s' % i)]['uploadDate'] = result[2]
