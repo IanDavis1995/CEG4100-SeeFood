@@ -55,7 +55,9 @@ def parseJSON():
         jsonObj[str('file%s' % i)] = {}
         jsonObj[str('file%s' % i)]['name'] = result[0]
         # int(result[1].encode("hex"))
-        jsonObj[str('file%s' % i)]['food'] = int(result[1].encode("hex"))
+        jsonObj[str('file%s' % i)]['contains_food'] = result[1].encode("hex") == "1"
+        jsonObj[str('file%s' % i)]['certainty'] = result[4]
+        jsonObj[str('file%s' % i)]['type'] = 'jpg'
         jsonObj[str('file%s' % i)]['uploadDate'] = result[2]
         imgByteArray = io.BytesIO()
         img = Image.open(result[3])
@@ -70,7 +72,7 @@ def parseJSON():
 def queryGenerator(name, classType, timePeriod):
     # in progress
     today = datetime.datetime.now().date()
-    query = "SELECT name, class, upload_time, img_pth FROM imageuploads WHERE "
+    query = "SELECT name, class, upload_time, img_pth, confidence FROM imageuploads WHERE "
 
     if name:
         query += "name='%s' " % name
@@ -97,7 +99,7 @@ def queryGenerator(name, classType, timePeriod):
         query += "upload_time>'%s'" % searchDate
 
     if name == '' and timePeriod == '' and classType == '':
-        query = "SELECT name, class, upload_time, img_pth FROM imageuploads"
+        query = "SELECT name, class, upload_time, img_pth, confidence FROM imageuploads"
 
     return query
 
