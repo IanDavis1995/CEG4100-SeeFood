@@ -135,8 +135,7 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
 
-        scrollLinearLayout.removeAllViews();
-        scrollLinearLayout.addView(galleryProgressBar);
+        reloadGallery();
 
         for (LinearLayout layout: allRows) {
             scrollLinearLayout.addView(layout, 0);
@@ -147,6 +146,11 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         galleryProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    private void reloadGallery() {
+        scrollLinearLayout.removeAllViews();
+        scrollLinearLayout.addView(galleryProgressBar);
     }
 
     private LinearLayout makeImageRow(ArrayList<Image> imageRow) {
@@ -180,6 +184,8 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         imagesToIDs = new HashMap<>();
         imageClicked = false;
 
+        reloadGallery();
+
         try {
             galleryProgressBar.setVisibility(View.VISIBLE);
             HTTPHandler.getAllImages(getGalleryResponseListener, httpErrorListener);
@@ -209,6 +215,13 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         String imageName = imagesToIDs.get(view.getId());
+
+        if (imageName == null) {
+            imageClicked = false;
+            return;
+        }
+
+        Log.d(TAG, "Image with name: " + imageName + " was clicked, loading results...");
 
         try {
             HTTPHandler.lookupImage(imageName, getAnalysisResponseListener, httpErrorListener);
