@@ -30,6 +30,7 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     private ProgressBar galleryProgressBar;
     private HashMap<Integer, String> imagesToIDs;
     private Intent analysisResultsIntent;
+    private boolean imageClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +75,9 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
             }
 
             AnalysisResultsActivity.setCurrentImage(image);
+            imageData.remove("data");
 
-            analysisResultsIntent.putExtra("analysis_results", response.toString());
+            analysisResultsIntent.putExtra("analysis_results", imageData.toString());
             startActivity(analysisResultsIntent);
         }
     };
@@ -83,6 +85,8 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     private Response.Listener<JSONObject> getGalleryResponseListener = new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject response) {
+            imageClicked = false;
+
             try {
                 Log.d(TAG, response.toString(4));
             } catch (JSONException e) {
@@ -96,7 +100,8 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     private Response.ErrorListener httpErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-            Log.e(TAG, error.getMessage());
+            imageClicked = false;
+            Log.e(TAG, "Unexpected error occurred communicating with server: " + error.getMessage());
         }
     };
 
@@ -173,6 +178,7 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         HTTPHandler.start();
 
         imagesToIDs = new HashMap<>();
+        imageClicked = false;
 
         try {
             galleryProgressBar.setVisibility(View.VISIBLE);
@@ -196,6 +202,12 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
+        if (imageClicked) {
+            return;
+        } else {
+            imageClicked = true;
+        }
+
         String imageName = imagesToIDs.get(view.getId());
 
         try {

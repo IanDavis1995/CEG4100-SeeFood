@@ -63,7 +63,7 @@ public class HTTPHandler {
         assertInitialized();
         Log.d(TAG, "Sending lookupImage HTTP Request");
         String requestUrl = url + "search";
-        JSONObject criteria = makeCriteria(imageName, "", "");
+        JSONObject criteria = makeCriteria(imageName, "", "", "T");
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, requestUrl, criteria, responseListener, errorListener);
         sendRequest(jsonObjectRequest);
     }
@@ -78,16 +78,17 @@ public class HTTPHandler {
         sendRequest(jsonObjectRequest);
     }
 
-    private static JSONObject makeCriteria(String imageName, String decision, String time) throws JSONException {
+    private static JSONObject makeCriteria(String imageName, String decision, String time, String type) throws JSONException {
         JSONObject object = new JSONObject();
         object.put("name", imageName);
         object.put("food", decision);
         object.put("time", time);
+        object.put("type", type);
         return object;
     }
 
     private static JSONObject makeEmptyCriteria() throws JSONException {
-        return makeCriteria("", "", "");
+        return makeCriteria("", "", "", "T");
     }
 
     private static void assertInitialized() throws IllegalStateException {
