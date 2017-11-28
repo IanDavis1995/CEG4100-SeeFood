@@ -56,6 +56,7 @@ public class HTTPHandler {
         String requestUrl = url + "analyze_json";
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, requestUrl, image.json(), responseListener, errorListener);
         sendRequest(jsObjRequest);
+        Log.d(TAG, "Sent HTTP Request with JSON Body: " + image.json().toString(4));
     }
 
     public static void lookupImage(String imageName, Response.Listener<JSONObject> responseListener,
@@ -63,9 +64,10 @@ public class HTTPHandler {
         assertInitialized();
         Log.d(TAG, "Sending lookupImage HTTP Request");
         String requestUrl = url + "search";
-        JSONObject criteria = makeCriteria(imageName, "", "", "T");
+        JSONObject criteria = makeCriteria(imageName, "", "", "F");
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, requestUrl, criteria, responseListener, errorListener);
         sendRequest(jsonObjectRequest);
+        Log.d(TAG, "Sent HTTP Request with JSON Body: " + criteria.toString(4));
     }
 
     public static void getAllImages(Response.Listener<JSONObject> responseListener,
@@ -76,6 +78,7 @@ public class HTTPHandler {
         JSONObject emptyCriteria = makeEmptyCriteria();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, requestUrl, emptyCriteria, responseListener, errorListener);
         sendRequest(jsonObjectRequest);
+        Log.d(TAG, "Sent HTTP Request with JSON Body: " + emptyCriteria.toString(4));
     }
 
     private static JSONObject makeCriteria(String imageName, String decision, String time, String type) throws JSONException {
