@@ -179,7 +179,6 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onResume() {
         super.onResume();
-        HTTPHandler.start();
 
         imagesToIDs = new HashMap<>();
         imageClicked = false;
@@ -197,13 +196,11 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onPause() {
         super.onPause();
-        HTTPHandler.stop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        HTTPHandler.stop();
     }
 
     @Override
