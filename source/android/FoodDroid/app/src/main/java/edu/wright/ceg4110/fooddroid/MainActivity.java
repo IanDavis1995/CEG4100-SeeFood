@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -27,7 +28,6 @@ import com.otaliastudios.cameraview.GestureAction;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import edu.wright.ceg4110.fooddroid.web.HTTPHandler;
@@ -45,9 +45,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton cancelUploadButton;
     private ImageButton pastUploadsButton;
     private ImageButton uploadExistingButton;
+    private ImageView existingImagePreview;
     private Intent analysisResultsIntent;
     public static Image currentImage;
     private TimingLogger timing = new TimingLogger(TAG, "cameraActivityTiming");
+    private boolean uploadingExistingPicture = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         analysisResultsIntent = new Intent(this, AnalysisResultsActivity.class);
 
         imageNameLabel = this.findViewById(R.id.image_name_label);
+        existingImagePreview = this.findViewById(R.id.existing_image_preview);
 
         pastUploadsButton = this.findViewById(R.id.past_uploads_button);
         pastUploadsButton.setOnClickListener(this);
@@ -130,7 +133,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        setTakePictureMode();
+
+        if (uploadingExistingPicture) {
+            existingImagePreview.setVisibility(View.VISIBLE);
+            existingImagePreview.setImageBitmap(currentImage.getBitmap());
+            setConfirmUploadMode();
+        } else {
+            setTakePictureMode();
+        }
+
+        uploadingExistingPicture = false;
     }
 
     @Override
@@ -187,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.upload_existing_button:
                 // TODO: Implement launching the local gallery to select image(s).
+                displayImagePicker();
                 break;
         }
     }
@@ -199,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pastUploadsButton.setVisibility(View.INVISIBLE);
         uploadExistingButton.setVisibility(View.INVISIBLE);
         takePictureButton.setVisibility(View.INVISIBLE);
+        cameraView.stop();
     }
 
     private void setTakePictureMode() {
@@ -209,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageNameLabel.setVisibility(View.INVISIBLE);
         confirmUploadButton.setVisibility(View.INVISIBLE);
         cancelUploadButton.setVisibility(View.INVISIBLE);
+        existingImagePreview.setVisibility(View.INVISIBLE);
         cameraView.start();
     }
 
@@ -226,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                 currentImage = new Image(bitmap);
-                setConfirmUploadMode();
+                uploadingExistingPicture = true;
             } catch (IOException e) {
                 Log.e(TAG, "Unknown error", e);
             }
