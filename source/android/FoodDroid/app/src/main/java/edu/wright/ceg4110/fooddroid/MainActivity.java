@@ -13,6 +13,7 @@ import android.util.TimingLogger;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -40,10 +41,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText imageNameEdit;
     private TextView imageNameLabel;
     private Button takePictureButton;
-    private Button confirmUploadButton;
-    private Button cancelUploadButton;
-    private Button pastUploadsButton;
-    private Button uploadExistingButton;
+    private ImageButton confirmUploadButton;
+    private ImageButton cancelUploadButton;
+    private ImageButton pastUploadsButton;
+    private ImageButton uploadExistingButton;
     private Intent analysisResultsIntent;
     public static Image currentImage;
     private TimingLogger timing = new TimingLogger(TAG, "cameraActivityTiming");
